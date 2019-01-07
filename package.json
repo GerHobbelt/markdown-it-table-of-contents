@@ -1,7 +1,7 @@
 {
   "license": "MIT",
-  "version": "0.2.0",
-  "name": "markdown-it-table-of-contents",
+  "version": "0.2.0-1",
+  "name": "@gerhobbelt/markdown-it-table-of-contents",
   "main": "index.js",
   "description": "A Markdown-it plugin for adding a table of contents to markdown documents",
   "homepage": "https://github.com/Oktavilla/markdown-it-table-of-contents",
@@ -24,5 +24,8 @@
   "dependencies": {
     "string": "~3.1.1",
     "lodash.assign": "~3.2.0"
+  },
+  "scripts": {
+    "pub": "npm publish --access public"
   }
 }
