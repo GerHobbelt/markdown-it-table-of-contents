@@ -1,56 +1,52 @@
-"use strict";
-var string = require("string");
-var assign = require("lodash.assign");
-var defaults = {
+'use strict';
+const slugify = (s) => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'));
+const defaults = {
   includeLevel: [ 1, 2 ],
-  containerClass: "table-of-contents",
-  slugify: function(str) {
-    return string(str).slugify().toString();
-  }
+  containerClass: 'table-of-contents',
+  slugify,
+  markerPattern: /^\[\[toc\]\]/im,
+  listType: 'ul',
+  format: undefined,
+  forceFullToc: false,
+  containerHeaderHtml: undefined,
+  containerFooterHtml: undefined,
 };
 
-module.exports = function(md, options) {
-  var options = assign({}, defaults, options);
-  var tocRegexp = /^\[\[toc\]\]/im;
-  var gstate;
+module.exports = (md, o) => {
+  const options = Object.assign({}, defaults, o);
+  const tocRegexp = options.markerPattern;
+  let gstate;
 
   function toc(state, silent) {
     var token;
     var match;
-
-    while (state.src.indexOf("\n") >= 0 && state.src.indexOf("\n") < state.src.indexOf("[[toc]]")) {
-      if (state.tokens.slice(-1)[0].type === "softbreak") {
-        state.src = state.src.split("\n").slice(1).join("\n");
-        state.pos = 0;
-      }
-    }
 
     // Reject if the token does not start with [
     if (state.src.charCodeAt(state.pos) !== 0x5B /* [ */ ) {
       return false;
     }
     // Don't run any pairs in validation mode
-    if (silent) { 
+    if (silent) {
       return false;
     }
 
     // Detect TOC markdown
-    match = tocRegexp.exec(state.src);
+    match = tocRegexp.exec(state.src.substr(state.pos));
     match = !match ? [] : match.filter(function(m) { return m; });
     if (match.length < 1) {
       return false;
     }
 
     // Build content
-    token = state.push("toc_open", "toc", 1);
-    token.markup = "[[toc]]";
-    token = state.push("toc_body", "", 0);
-    token = state.push("toc_close", "toc", -1);
+    token = state.push('toc_open', 'toc', 1);
+    token.markup = '[[toc]]';
+    token = state.push('toc_body', '', 0);
+    token = state.push('toc_close', 'toc', -1);
 
     // Update pos so the parser can continue
-    var newline = state.src.indexOf("\n");
+    var newline = state.src.indexOf('\n', state.pos);
     if (newline !== -1) {
-      state.pos = state.pos + newline;
+      state.pos = newline;
     } else {
       state.pos = state.pos + state.posMax + 1;
     }
@@ -59,15 +55,56 @@ module.exports = function(md, options) {
   }
 
   md.renderer.rules.toc_open = function(tokens, index) {
-    return "<div class=\"table-of-contents\">";
+    var tocOpenHtml = `<div class="${options.containerClass}">`;
+
+    if (options.containerHeaderHtml) {
+      tocOpenHtml += options.containerHeaderHtml;
+    }
+
+    return tocOpenHtml;
   };
 
   md.renderer.rules.toc_close = function(tokens, index) {
-    return "</div>";
+    var tocFooterHtml = '';
+
+    if (options.containerFooterHtml) {
+      tocFooterHtml = options.containerFooterHtml;
+    }
+
+    return tocFooterHtml + `</div>`;
   };
 
   md.renderer.rules.toc_body = function(tokens, index) {
-    return renderChildsTokens(0, gstate.tokens)[1];
+    if (options.forceFullToc) {
+      /*
+      
+      Renders full TOC even if the hierarchy of headers contains
+      a header greater than the first appearing header
+      
+      ## heading 2
+      ### heading 3
+      # heading 1
+      
+      Result TOC:
+      - heading 2
+         - heading 3
+      - heading 1 
+
+      */
+      var tocBody = '';
+      var pos = 0;
+      var tokenLength = gstate && gstate.tokens && gstate.tokens.length;
+
+      while (pos < tokenLength) {
+        var tocHierarchy = renderChildsTokens(pos, gstate.tokens);
+        pos = tocHierarchy[0];
+        tocBody += tocHierarchy[1];
+      }
+
+      return tocBody;
+    } else {
+      return renderChildsTokens(0, gstate.tokens)[1];
+    }
   };
 
   function renderChildsTokens(pos, tokens) {
@@ -80,8 +117,8 @@ module.exports = function(md, options) {
     while(i < size) {
       var token = tokens[i];
       var heading = tokens[i - 1];
-      var level = parseInt(token.tag.substr(1, 1));
-      if (token.type !== "heading_close" || options.includeLevel.indexOf(level) == -1 || heading.type !== "inline") {
+      var level = token.tag && parseInt(token.tag.substr(1, 1));
+      if (token.type !== 'heading_close' || options.includeLevel.indexOf(level) == -1 || heading.type !== 'inline') {
         i++; continue; // Skip if not matching criteria
       }
       if (!currentLevel) {
@@ -95,29 +132,31 @@ module.exports = function(md, options) {
         }
         if (level < currentLevel) {
           // Finishing the sub headings
-          buffer += "</li>";
+          buffer += `</li>`;
           headings.push(buffer);
-          return [i, "<ul>" + headings.join("") + "</ul>"];
+          return [i, `<${options.listType}>${headings.join('')}</${options.listType}>`];
         }
         if (level == currentLevel) {
           // Finishing the sub headings
-          buffer += "</li>";
+          buffer += `</li>`;
           headings.push(buffer);
         }
       }
-      buffer = "<li><a href=\"#" + options.slugify(heading.content) + "\">" + heading.content + "</a>";
+      buffer = `<li><a href="#${options.slugify(heading.content)}">`;
+      buffer += typeof options.format === 'function' ? options.format(heading.content) : heading.content;
+      buffer += `</a>`;
       i++;
     }
-    buffer += "</li>";
+    buffer += buffer === '' ? '' : `</li>`;
     headings.push(buffer);
-    return [i, "<ul>" + headings.join("") + "</ul>"];
+    return [i, `<${options.listType}>${headings.join('')}</${options.listType}>`];
   }
 
   // Catch all the tokens for iteration later
-  md.core.ruler.push("grab_state", function(state) {
+  md.core.ruler.push('grab_state', function(state) {
     gstate = state;
   });
 
   // Insert TOC
-  md.inline.ruler.after("emphasis", "toc", toc);
+  md.inline.ruler.after('emphasis', 'toc', toc);
 };

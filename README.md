@@ -1,6 +1,5 @@
 # markdown-it-table-of-contents
-A table of contents plugin for Markdown-it. Based on https://github.com/samchrisinger/markdown-it-toc but 
-simpler, a bit more customizable and with a default slugifier that matches that of https://www.npmjs.com/package/markdown-it-anchor.
+A table of contents plugin for Markdown-it. Simple, customizable and with a default slugifier that matches that of https://www.npmjs.com/package/markdown-it-anchor (>5.0.0).
 
 ## Usage
 
@@ -55,15 +54,27 @@ Some even nicer text
 
 You may specify options when `use`ing the plugin. like so:
 ``` javascript
-md.use(require("markdown-it-table-of-contents", options));
+md.use(require("markdown-it-table-of-contents"), options);
 ```
 
 These options are available:
 
-Name              | Description                               | Default
-------------------|-------------------------------------------|------------------------------------
-"includeLevel"    | Headings levels to use (2 for h2:s etc)   | [1, 2]
-"containerClass"  | The class for the container DIV           | "table-of-contents"
-"slugify"         | A custom slugification function           | [string.js' `slugify`][slugify]
+Name                   | Description                                                                         | Default
+-----------------------|-------------------------------------------------------------------------------------|------------------------------------
+"includeLevel"         | Headings levels to use (2 for h2:s etc)                                             | [1, 2]
+"containerClass"       | The class for the container DIV                                                     | "table-of-contents"
+"slugify"              | A custom slugification function                                                     | `encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))`
+"markerPattern"        | Regex pattern of the marker to be replaced with TOC                                 | `/^\[\[toc\]\]/im`
+"listType"             | Type of list (`ul` for unordered, `ol` for ordered)                                 | `ul`
+"format"               | A function for formatting headings (see below)                                      | `undefined`
+"forceFullToc"         | If true, renders all the headers in TOC, even if the headers are in incorrect order | false
+"containerHeaderHtml"  | Optional HTML string for container header                                           | `<div class="toc-container-header">Contents</div>`
+"containerFooterHtml"  | Optional HTML string for container footer                                           | `<div class="toc-container-footer">Footer</div>`
 
-[slugify]: http://stringjs.com/#methods/slugify
+`format` is an optional function for changing how the headings are displayed in the TOC.
+```js
+function format(headingAsString) {
+  // manipulate the headings as you like here.
+  return manipulatedHeadingString;
+}
+```
