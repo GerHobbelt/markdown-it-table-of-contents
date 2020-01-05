@@ -1,7 +1,7 @@
 {
   "license": "MIT",
-  "version": "0.4.4",
-  "name": "markdown-it-table-of-contents",
+  "version": "0.5.4",
+  "name": "@asdofindia/markdown-it-table-of-contents",
   "main": "index.js",
   "scripts": {
     "test": "export NODE_ENV=test; mocha test --recursive"
@@ -9,8 +9,8 @@
   "engines": {
     "node": ">6.4.0"
   },
-  "description": "A Markdown-it plugin for adding a table of contents to markdown documents",
-  "homepage": "https://github.com/Oktavilla/markdown-it-table-of-contents",
+  "description": "A Markdown-it plugin for adding a table of contents to markdown documents (fork of Oktavilla's project with defaults changed)",
+  "homepage": "https://github.com/asdofindia/markdown-it-table-of-contents",
   "keywords": [
     "markdown",
     "markdown-it",
@@ -20,13 +20,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Oktavilla/markdown-it-table-of-contents.git"
+    "url": "https://github.com/asdofindia/markdown-it-table-of-contents.git"
   },
   "bugs": {
-    "url": "https://github.com/Oktavilla/markdown-it-table-of-contents/issues"
+    "url": "https://github.com/asdofindia/markdown-it-table-of-contents/issues"
   },
   "author": "Oktavilla <https://github.com/Oktavilla>",
-  "contributors": "Listed at <https://github.com/Oktavilla/markdown-it-table-of-contents/contributors>",
+  "contributors": ["Listed at <https://github.com/Oktavilla/markdown-it-table-of-contents/contributors>", "Akshay S Dinesh <asdofindia@gmail.com> (https://asd.learnlearn.in)"],
   "devDependencies": {
     "mocha": "~5.2.0",
     "markdown-it": "~8.1.0",
