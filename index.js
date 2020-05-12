@@ -149,7 +149,7 @@ module.exports = (md, o) => {
       var slugifiedContent = options.slugify(content);
       var link = "#"+slugifiedContent;
       if (options.transformLink) {
-          link = options.transformLink(link);
+          link = options.transformLink(link, content);
       }
       buffer = `<li><a href="${link}">`;
       buffer += typeof options.format === 'function' ? options.format(content) : content;
