@@ -1,5 +1,3 @@
-'use strict';
-
 const slugify = (s) => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'));
 
 const defaults = {
@@ -15,7 +13,7 @@ const defaults = {
   transformLink: undefined
 };
 
-module.exports = (md, o) => {
+var markdownItTableOfContents = (md, o) => {
   const options = Object.assign({}, defaults, o);
   const tocRegexp = options.markerPattern;
   let gstate;
@@ -171,3 +169,5 @@ module.exports = (md, o) => {
   // Insert TOC
   md.inline.ruler.after('emphasis', 'toc', toc);
 };
+
+export default markdownItTableOfContents;

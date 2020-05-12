@@ -10,7 +10,10 @@
     "markdown-it-plugin"
   ],
   "author": "Oktavilla <https://github.com/Oktavilla>",
-  "contributors": ["Listed at <https://github.com/Oktavilla/markdown-it-table-of-contents/contributors>", "Akshay S Dinesh <asdofindia@gmail.com> (https://asd.learnlearn.in)"],
+  "contributors": [
+    "Listed at <https://github.com/Oktavilla/markdown-it-table-of-contents/contributors>",
+    "Akshay S Dinesh <asdofindia@gmail.com> (https://asd.learnlearn.in)"
+  ],
   "repository": "GerHobbelt/markdown-it-table-of-contents",
   "license": "MIT",
   "source": "index.js",
@@ -33,6 +36,7 @@
   },
   "devDependencies": {
     "@gerhobbelt/markdown-it": "10.0.0-34",
+    "@gerhobbelt/markdown-it-anchor": "^5.2.7-14",
     "@gerhobbelt/markdown-it-testgen": "0.1.6-7",
     "browserify": "16.5.1",
     "chai": "4.2.0",
