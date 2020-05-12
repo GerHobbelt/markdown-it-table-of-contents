@@ -29,8 +29,8 @@
   "author": "Oktavilla <https://github.com/Oktavilla>",
   "contributors": "Listed at <https://github.com/Oktavilla/markdown-it-table-of-contents/contributors>",
   "devDependencies": {
-    "mocha": "5.2.0",
-    "@gerhobbelt/markdown-it": "8.4.2-24",
+    "mocha": "6.2.2",
+    "@gerhobbelt/markdown-it": "10.0.0-30",
     "@gerhobbelt/markdown-it-anchor": "5.0.1"
   }
 }
