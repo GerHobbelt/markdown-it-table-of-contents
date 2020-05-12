@@ -1,6 +1,6 @@
 {
   "name": "@gerhobbelt/markdown-it-table-of-contents",
-  "version": "0.4.4-2",
+  "version": "0.4.4-3",
   "description": "A Markdown-it plugin for adding a table of contents to markdown documents (fork of Oktavilla's project with defaults changed)",
   "keywords": [
     "markdown",
