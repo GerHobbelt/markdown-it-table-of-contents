@@ -1,5 +1,7 @@
 'use strict';
+
 const slugify = (s) => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'));
+
 const defaults = {
   includeLevel: [ 1, 2, 3, 4 ],
   containerClass: 'table-of-contents',
